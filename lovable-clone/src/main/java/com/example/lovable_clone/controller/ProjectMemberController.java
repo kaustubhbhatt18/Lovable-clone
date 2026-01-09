@@ -3,6 +3,7 @@ package com.example.lovable_clone.controller;
 import com.example.lovable_clone.Service.ProjectMemberService;
 import com.example.lovable_clone.dto.member.InviteMemberRequest;
 import com.example.lovable_clone.dto.member.MemberResponse;
+import com.example.lovable_clone.dto.member.UpdateMemberRoleRequest;
 import com.example.lovable_clone.entity.ProjectMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class ProjectMemberController {
 private final ProjectMemberService projectMemberService;
 
     @GetMapping
-    public ResponseEntity<List<ProjectMember>> getProjectMember(
+    public ResponseEntity<List<MemberResponse>> getProjectMember(
             @PathVariable Long projectId  )
     {
         Long userId = 1L;
@@ -42,7 +43,7 @@ private final ProjectMemberService projectMemberService;
     public ResponseEntity<MemberResponse>updateMemberRole(
             @PathVariable Long projectId,
             @PathVariable Long memberId,
-            @RequestBody InviteMemberRequest request)
+            @RequestBody UpdateMemberRoleRequest request)
     {
         Long userId =1L;
         return ResponseEntity.ok(
