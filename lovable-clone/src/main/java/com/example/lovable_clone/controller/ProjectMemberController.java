@@ -4,10 +4,8 @@ import com.example.lovable_clone.Service.ProjectMemberService;
 import com.example.lovable_clone.dto.member.InviteMemberRequest;
 import com.example.lovable_clone.dto.member.MemberResponse;
 import com.example.lovable_clone.dto.member.UpdateMemberRoleRequest;
-import com.example.lovable_clone.entity.ProjectMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,47 +15,50 @@ import java.util.List;
 @RequestMapping(path="/api/projects/{projectId}/members")
 @RequiredArgsConstructor
 public class ProjectMemberController {
-private final ProjectMemberService projectMemberService;
+
+    private final ProjectMemberService projectMemberService;
 
     @GetMapping
     public ResponseEntity<List<MemberResponse>> getProjectMember(
-            @PathVariable Long projectId  )
+            @PathVariable Long projectId)
     {
         Long userId = 1L;
-        return ResponseEntity
-                .ok(projectMemberService.
-                        getProjectMember(projectId,userId));
+        return ResponseEntity.ok(
+                projectMemberService.getProjectMember(projectId, userId)
+        );
     }
+
     @PostMapping
-    public ResponseEntity<MemberResponse>invitedMember(
+    public ResponseEntity<MemberResponse> invitedMember(
             @PathVariable Long projectId,
             @RequestBody InviteMemberRequest request)
     {
-        Long userId=1L;
-        return ResponseEntity.
-                status(HttpStatus.CREATED).
-                body(projectMemberService
-                        .invitedMember(projectId,request,userId));
+        Long userId = 1L;
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(projectMemberService.invitedMember(projectId, request, userId));
     }
-    @PatchMapping("{/memberId}")
-    public ResponseEntity<MemberResponse>updateMemberRole(
+
+    @PatchMapping("/{memberId}")
+    public ResponseEntity<MemberResponse> updateMemberRole(
             @PathVariable Long projectId,
             @PathVariable Long memberId,
             @RequestBody UpdateMemberRoleRequest request)
     {
-        Long userId =1L;
+        Long userId = 1L;
         return ResponseEntity.ok(
-                projectMemberService.updateMemberRole(
-                        projectId,memberId,userId,request));
+                projectMemberService.updateMemberRole(projectId, memberId, userId, request)
+        );
     }
-    @DeleteMapping("{/memberId}")
-    public ResponseEntity<MemberResponse>deleteProjectMember(
+
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<MemberResponse> deleteProjectMember(
             @PathVariable Long projectId,
             @PathVariable Long memberId)
     {
-        Long userId =1L;
-        return ResponseEntity
-                .ok(projectMemberService
-                        .deleteProjectMember(projectId,memberId,userId));
+        Long userId = 1L;
+        return ResponseEntity.ok(
+                projectMemberService.deleteProjectMember(projectId, memberId, userId)
+        );
     }
 }

@@ -1,39 +1,40 @@
 package com.example.lovable_clone.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.*;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "users")   // ✅ VERY IMPORTANT (avoid reserved keyword "user")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
+
     @Id
-     long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // ✅ auto-generate ID
+    Long id;
 
-    @NotNull(message = "Email can't be Null")
-     String email;
+    @NotNull(message = "Email can't be null")
+    @Column(nullable = false, unique = true)
+    String email;
 
-    @NotNull(message="Password can't be Empty")
-     String password;
+    @NotNull(message = "Password can't be empty")
+    @Column(nullable = false)
+    String password;
 
-    @NotNull(message="Name can't be null")
-     String name;
+    @NotNull(message = "Name can't be null")
+    @Column(nullable = false)
+    String name;
 
-     String avatar_url;
+    String avatar_url;
 
     Instant created_at;
-
     Instant updated_at;
-
-     Instant deleted_at;
+    Instant deleted_at;
 }
