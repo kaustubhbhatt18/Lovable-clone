@@ -31,21 +31,32 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse createProject(ProjectRequest request, Long userId) {
+
         User owner = userRepository.findById(userId).orElseThrow();
-        Project project = Project
-                .builder()
+
+        Project project = Project.builder()
                 .name(request.name())
+                .owner(owner)
+                .isPublic(false)
                 .build();
+
         project = projectRepository.save(project);
         return projectMapper.toProjectResponse(project);
     }
 
-
     @Override
     public List<ProjectSummaryResponse> getUserProjects(Long userId) {
-        return List.of();
+//        return projectRepository.findAllAccessibleByUser(userId)
+//                .stream().map(projectMapper::toProjectSummaryResponse)
+//                .collect(Collectors.toList());
+        var projects = projectRepository.findAllAccessibleByUser(userId);
+        return projectMapper.toListOfProjectSummaryResponse(projects);
     }
 
+    @Override
+    public ProjectResponse getUserProjectById(Long id, Long userId) {
+        return null;
+    }
 
 
     @Override
@@ -57,6 +68,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectResponse updateProject(Long id, ProjectRequest request, Long userId) {
         return null;
+    }
+
+    @Override
+    public void softDelete(Long id, Long userId) {
+
     }
 
     @Override

@@ -36,9 +36,13 @@ public class User {
 
     String avatar_url;
     @CreationTimestamp
-    Instant created_at;
-    @UpdateTimestamp
-    Instant updated_at;
+    @Column(nullable = false, updatable = false, insertable = false)
+    Instant createdAt;
 
-    Instant deleted_at;
+    @UpdateTimestamp
+    @Column(nullable = false, insertable = false)
+    Instant updatedAt;
+
+
+    Instant deletedAt;
 }

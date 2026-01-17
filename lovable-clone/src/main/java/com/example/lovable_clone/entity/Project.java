@@ -10,27 +10,35 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 @AllArgsConstructor
 @Getter
-@Entity
+
 @Setter
 @NoArgsConstructor
 @Builder
-@Table(name="projects")
 @FieldDefaults(level=AccessLevel.PRIVATE)
+@Entity
+@Table(name="projects")
 public class Project {
-   @Id
-           @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-   @Column(nullable = false)
+    @Column(nullable = false)
     String name;
 
     @ManyToOne
-    @JoinColumn(name="owner_id",nullable = false)
+    @JoinColumn(name="owner_id", nullable = false)
     User owner;
-    Boolean isPublic=false;
+
+    Boolean isPublic = false;
+
     @CreationTimestamp
-    Instant created_at;
+    @Column(nullable = false, updatable = false)
+    Instant createdAt;
+
     @UpdateTimestamp
-    Instant updated_at;
-    Instant deleted_at;
+    @Column(nullable = false)
+    Instant updatedAt;
+
+    Instant deletedAt;
 }

@@ -16,9 +16,9 @@ public class ProjectFile {
     Project project;
     String path;
     String minioObjKey;
-    Instant created_at;
+    Instant createdAt;
 
-    Instant updated_at;
+    Instant updatedAt;
     User createdBy;
     User UpdatedBy;
 }

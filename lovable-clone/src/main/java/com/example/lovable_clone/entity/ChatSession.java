@@ -14,9 +14,9 @@ public class ChatSession {
     Project project;
     User user;
     String title;
-    Instant created_at;
+    Instant createdAt;
 
-    Instant updated_at;
+    Instant updatedAt;
 
-    Instant deleted_at;
+    Instant deletedAt;
 }
