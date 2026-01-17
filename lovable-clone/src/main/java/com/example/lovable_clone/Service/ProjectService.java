@@ -14,11 +14,10 @@ public interface ProjectService {
 
     ProjectResponse createProject(ProjectRequest request, Long userId);
 
-    ProjectResponse getUserProjectsById(Long id, Long userid);
 
     ProjectResponse updateProject(Long id, ProjectRequest request, Long userId);
 
-    void softDelete(Long id, Long userId);
+
 
     void softdelete(Long id, Long userId);
 }

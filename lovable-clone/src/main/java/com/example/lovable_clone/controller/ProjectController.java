@@ -21,11 +21,12 @@ public class ProjectController {
     Long userId=1L;
     return ResponseEntity.ok(projectService.getUserProjects(userId));
 }
-@GetMapping("/{id}")
-    public ResponseEntity<ProjectResponse>getProjectById(@PathVariable Long id){
-Long userid=1L;
-    return ResponseEntity.ok(projectService.getUserProjectsById(id,userid));
-}
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectResponse> getProjectById(@PathVariable Long id){
+        Long userId = 1L;
+        return ResponseEntity.ok(projectService.getUserProjectById(id, userId)); // ✅ CORRECT
+    }
+
 @PostMapping
     public ResponseEntity<ProjectResponse>createProject(@RequestBody ProjectRequest request){
     Long userId = 1L;
