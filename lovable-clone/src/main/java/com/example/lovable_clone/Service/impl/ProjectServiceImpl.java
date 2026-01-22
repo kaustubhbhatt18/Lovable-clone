@@ -42,7 +42,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .isPublic(false)
                 .build();
 
-        project = projectRepository.save(project);
+//        project = projectRepository.save(project);
         return projectMapper.toProjectResponse(project);
     }
 
@@ -66,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = getAccessibleProjectById(id,userId);
         project.setName(request.name());
 
-        project = projectRepository.save(project);
+//        project = projectRepository.save(project); as i am using @Transactional no need to save
         return projectMapper.toProjectResponse(project);
     }
 
