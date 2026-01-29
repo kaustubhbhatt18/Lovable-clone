@@ -24,24 +24,24 @@ public class User {
 
     @NotNull(message = "Email can't be null")
     @Column(nullable = false, unique = true)
-    String email;
+String username;
 
 //    @NotNull(message = "Password can't be empty")
 //    @Column(nullable = false)
    String password;
-
     @NotNull(message = "Name can't be null")
     @Column(nullable = false)
     String name;
 
-    String avatar_url;
+
     @CreationTimestamp
-    @Column(nullable = false, updatable = false, insertable = false)
+    @Column(nullable = false, updatable = false)
     Instant createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false, insertable = false)
+    @Column(nullable = false)
     Instant updatedAt;
+
 
 
     Instant deletedAt;
