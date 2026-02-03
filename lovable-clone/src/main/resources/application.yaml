@@ -17,3 +17,5 @@ spring:
         format_sql: true
         jdbc:
           time_zone: Asia/Kolkata
+jwt:
+  secret-key: "asfasa86fas9fa2fsgj5d6j7f3d6h8k4"

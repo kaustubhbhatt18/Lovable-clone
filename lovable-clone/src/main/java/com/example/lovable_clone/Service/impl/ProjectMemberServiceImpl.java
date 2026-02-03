@@ -12,6 +12,7 @@ import com.example.lovable_clone.mapper.ProjectMemberMapper;
 import com.example.lovable_clone.repository.ProjectMemberRepository;
 import com.example.lovable_clone.repository.ProjectRepository;
 import com.example.lovable_clone.repository.UserRepository;
+import com.example.lovable_clone.security.AuthUtil;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 @Transactional
 public class ProjectMemberServiceImpl implements ProjectMemberService {
 
@@ -32,40 +33,39 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     ProjectRepository projectRepository;
     ProjectMemberMapper projectMemberMapper;
     UserRepository userRepository;
+    AuthUtil authUtil;
+
 
     @Override
-    public List<MemberResponse> getProjectMember(Long projectId, Long userId) {
+    public List<MemberResponse> getProjectMembers(Long projectId) {
+        Long userId = authUtil.getCurrentUserId();
         Project project = getAccessibleProjectById(projectId, userId);
 
         return projectMemberRepository.findByIdProjectId(projectId)
-                        .stream()
-                        .map(projectMemberMapper::toProjectMemberResponseFromMember)
-                        .toList();
+                .stream()
+                .map(projectMemberMapper::toProjectMemberResponseFromMember)
+                .toList();
     }
 
     @Override
-    public MemberResponse invitedMember(Long projectId, InviteMemberRequest request, Long userId) {
+    public MemberResponse inviteMember(Long projectId, InviteMemberRequest request) {
+        Long userId = authUtil.getCurrentUserId();
         Project project = getAccessibleProjectById(projectId, userId);
 
+        User invitee = userRepository.findByUsername(request.username()).orElseThrow();
 
-
-        // Find user by email
-        User invitee = userRepository.findByUsername(request.username())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Cannot invite yourself
-        if (invitee.getId().equals(userId)) {
+        if(invitee.getId().equals(userId)) {
             throw new RuntimeException("Cannot invite yourself");
         }
 
-        // ✅ CORRECT CHECK: is user already member?
-        if (projectMemberRepository.existsByIdProjectIdAndIdUserId(projectId, invitee.getId())) {
-            throw new RuntimeException("User already invited");
+        ProjectMemberId projectMemberId = new ProjectMemberId(projectId, invitee.getId());
+
+        if(projectMemberRepository.existsById(projectMemberId)) {
+            throw new RuntimeException("Cannot invite once again");
         }
 
-        // Create new member
         ProjectMember member = ProjectMember.builder()
-                .id(new ProjectMemberId(projectId, invitee.getId()))
+                .id(projectMemberId)
                 .project(project)
                 .user(invitee)
                 .projectRole(request.role())
@@ -78,35 +78,36 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
-    public MemberResponse updateMemberRole(Long projectId, Long memberId, Long userId, UpdateMemberRoleRequest request) {
+    public MemberResponse updateMemberRole(Long projectId, Long memberId, UpdateMemberRoleRequest request) {
+        Long userId = authUtil.getCurrentUserId();
         Project project = getAccessibleProjectById(projectId, userId);
 
-
-        ProjectMemberId projectMemberId = new ProjectMemberId(projectId,memberId);
+        ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
         ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow();
-    projectMember.setProjectRole(request.role());
-    projectMemberRepository.save(projectMember);
-    return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
-        }
 
-    @Override
-    public void removeProjectMember(Long projectId, Long memberId, Long userId) {
-        Project project = getAccessibleProjectById(projectId, userId);
+        projectMember.setProjectRole(request.role());
 
+        projectMemberRepository.save(projectMember);
 
-
-        ProjectMemberId projectMemberId = new ProjectMemberId(projectId,memberId);
-        if(!projectMemberRepository.existsById(projectMemberId)){
-            throw new RuntimeException("Member not found in project");
-        }
-        projectMemberRepository.deleteById(projectMemberId);
-
+        return projectMemberMapper.toProjectMemberResponseFromMember(projectMember);
     }
 
+    @Override
+    public void removeProjectMember(Long projectId, Long memberId) {
+        Long userId = authUtil.getCurrentUserId();
+        Project project = getAccessibleProjectById(projectId, userId);
 
-    /// INTERNAL FUNCTION
+        ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
+        if(!projectMemberRepository.existsById(projectMemberId)) {
+            throw new RuntimeException("Member not found in project");
+        }
+
+        projectMemberRepository.deleteById(projectMemberId);
+    }
+
+    ///  INTERNAL FUNCTIONS
+
     public Project getAccessibleProjectById(Long projectId, Long userId) {
-        return projectRepository.findAccessibleProjectById(projectId, userId)
-                .orElseThrow(() -> new RuntimeException("Project not found or no access"));
+        return projectRepository.findAccessibleProjectById(projectId, userId).orElseThrow();
     }
 }

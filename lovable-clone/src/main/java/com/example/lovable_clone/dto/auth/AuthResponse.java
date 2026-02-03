@@ -1,7 +1,6 @@
 package com.example.lovable_clone.dto.auth;
 
-public record AuthResponse(Long id,
-        String username,
+public record AuthResponse(
         String token,
         UserProfileResponse user) {
 

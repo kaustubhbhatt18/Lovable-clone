@@ -2,15 +2,16 @@ package com.example.lovable_clone.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
-@Setter
-@Getter
+import java.io.Serializable;
+
 @Embeddable
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level= AccessLevel.PRIVATE)
-public class ProjectMemberId {
-    Long projectId;
-    Long  userId;
+@EqualsAndHashCode
+public class ProjectMemberId implements Serializable {
+    private Long projectId;
+    private Long userId;
 }

@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
      AuthService authService;
      UserService userService;
-    @PostMapping("/signup")
+
+     @PostMapping("/signup")
     public ResponseEntity<AuthResponse>signup(@RequestBody SignupRequest request){
 return ResponseEntity.ok(authService.signup(request));
     }
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse>login(@RequestBody LoginRequest request){
         return ResponseEntity.ok(authService.login(request));
